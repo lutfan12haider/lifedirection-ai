@@ -1,42 +1,52 @@
 @import "tailwindcss";
 
-:root {
-  /* Calming color palette */
-  --color-primary: hsl(210, 70%, 60%);
-  --color-primary-light: hsl(210, 70%, 70%);
-  --color-primary-dark: hsl(210, 70%, 50%);
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+}
 
+@font-face {
+  font-family: 'Outfit';
+  src: url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+}
+
+:root {
+  /* Deep Space Palette */
+  --color-bg-deep: hsl(240, 20%, 3%);
+  --color-bg-surface: hsl(240, 20%, 7%);
+  --color-bg-card: hsla(240, 20%, 10%, 0.6);
+
+  /* Neon Accents */
+  --color-cyan: hsl(180, 100%, 50%);
+  --color-cyan-glow: hsla(180, 100%, 50%, 0.3);
+  --color-purple: hsl(270, 100%, 60%);
+  --color-purple-glow: hsla(270, 100%, 60%, 0.3);
+  --color-magenta: hsl(320, 100%, 60%);
+  --color-magenta-glow: hsla(320, 100%, 60%, 0.3);
+
+  /* Functional Colors */
   --color-success: hsl(142, 70%, 55%);
   --color-warning: hsl(35, 85%, 60%);
   --color-danger: hsl(350, 70%, 60%);
 
-  --color-bg-primary: hsl(220, 25%, 98%);
-  --color-bg-secondary: hsl(220, 20%, 95%);
-  --color-bg-card: hsl(0, 0%, 100%);
+  /* Text */
+  --color-text-bright: hsl(0, 0%, 100%);
+  --color-text-dim: hsl(240, 10%, 70%);
+  --color-text-muted: hsl(240, 10%, 45%);
 
-  --color-text-primary: hsl(220, 20%, 20%);
-  --color-text-secondary: hsl(220, 15%, 45%);
-  --color-text-muted: hsl(220, 10%, 60%);
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, hsl(210, 70%, 60%) 0%, hsl(240, 60%, 65%) 100%);
-  --gradient-success: linear-gradient(135deg, hsl(142, 70%, 55%) 0%, hsl(165, 65%, 50%) 100%);
-  --gradient-soft: linear-gradient(135deg, hsl(220, 25%, 98%) 0%, hsl(210, 30%, 96%) 100%);
-
-  /* Spacing & Borders */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  /* Glassmorphism Defaults */
+  --glass-bg: hsla(0, 0%, 100%, 0.03);
+  --glass-border: hsla(0, 0%, 100%, 0.1);
+  --glass-blur: blur(12px);
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-neon-cyan: 0 0 20px var(--color-cyan-glow);
+  --shadow-neon-purple: 0 0 20px var(--color-purple-glow);
 }
 
 @theme inline {
-  --font-sans: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
 }
 
 * {
@@ -46,36 +56,91 @@
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-deep);
+  color: var(--color-text-bright);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image:
+    radial-gradient(circle at 20% 20%, hsla(270, 100%, 60%, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, hsla(180, 100%, 50%, 0.05) 0%, transparent 40%);
+  min-height: 100vh;
 }
 
-/* Smooth transitions for all interactive elements */
+/* Glassmorphism Component Utility */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Futuristic Transitions */
 button,
 a,
 input,
 select {
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Custom scrollbar */
+/* Neon Glow Animations */
+@keyframes neon-pulse {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px var(--color-cyan-glow));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 15px var(--color-cyan-glow));
+  }
+}
+
+.animate-neon {
+  animation: neon-pulse 3s infinite ease-in-out;
+}
+
+/* Custom Scrollbar - Futuristic */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-deep);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-text-muted);
-  border-radius: 5px;
+  background: var(--glass-border);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
+  background: var(--color-cyan);
+  box-shadow: 0 0 10px var(--color-cyan-glow);
+}
+
+/* Input Range Styling (Futuristic) */
+input[type="range"] {
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  background: var(--color-bg-surface);
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: var(--color-cyan);
+  box-shadow: 0 0 10px var(--color-cyan-glow);
+  cursor: pointer;
+  margin-top: -6px;
 }

@@ -2,89 +2,66 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: 'var(--gradient-soft)' }}>
-      <main className="max-w-2xl w-full text-center">
-        {/* Hero Section */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full"
-            style={{
-              background: 'var(--color-bg-card)',
-              boxShadow: 'var(--shadow-sm)'
-            }}>
-            <span className="text-2xl">🧭</span>
-            <span className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-              LifeDirection AI
-            </span>
-          </div>
+    <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 bg-[#050505]">
+      {/* Immersive Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-purple-600/10 blur-[120px] animate-pulse"></div>
+        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-cyan-600/10 blur-[120px] animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+      </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight"
-            style={{ color: 'var(--color-text-primary)' }}>
-            See Where Your Life<br />Is{' '}
-            <span style={{
-              background: 'var(--gradient-primary)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              Heading
-            </span>
-          </h1>
-
-          <p className="text-lg md:text-xl mb-2 max-w-xl mx-auto"
-            style={{ color: 'var(--color-text-secondary)' }}>
-            We don&apos;t predict your future. We show the direction your life is moving.
-          </p>
-
-          <p className="text-base mb-8 max-w-lg mx-auto"
-            style={{ color: 'var(--color-text-muted)' }}>
-            Based on your habits, routine, and mindset, discover three possible paths and how small changes can create a better direction.
-          </p>
+      <main className="relative z-10 max-w-4xl w-full text-center">
+        {/* Futuristic Badge */}
+        <div className="inline-flex items-center gap-3 mb-8 px-5 py-2 rounded-full glass-card animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <span className="text-xl animate-pulse">✨</span>
+          <span className="text-xs font-bold tracking-[0.3em] uppercase text-cyan-400">
+            Advanced Life Analysis
+          </span>
         </div>
 
-        {/* CTA Button */}
-        <Link href="/questionnaire">
-          <button
-            className="group relative px-8 py-4 text-lg font-semibold text-white rounded-full overflow-hidden transform hover:scale-105 transition-all duration-300"
-            style={{
-              background: 'var(--gradient-primary)',
-              boxShadow: 'var(--shadow-md)'
-            }}>
-            <span className="relative z-10 flex items-center gap-2">
-              See My Life Direction
-              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </span>
-          </button>
-        </Link>
+        <h1 className="text-5xl md:text-8xl font-black mb-6 tracking-tighter leading-[0.9] animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          SEE YOUR<br />
+          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent italic">
+            FUTURE PATH
+          </span>
+        </h1>
 
-        <p className="mt-4 text-sm" style={{ color: 'var(--color-text-muted)' }}>
-          ⏱️ Takes less than 1 minute • No signup required
+        <p className="text-lg md:text-2xl mb-12 max-w-2xl mx-auto text-dim font-light leading-relaxed animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-200">
+          Discover where your life is heading.
+          Get clear insights based on your daily habits.
         </p>
 
-        {/* Features */}
-        <div className="grid md:grid-cols-3 gap-4 mt-16">
+        {/* CTA Group */}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
+          <Link href="/questionnaire">
+            <button className="group relative px-10 py-5 bg-cyan-500 text-black font-bold rounded-2xl overflow-hidden hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(34,211,238,0.4)]">
+              <span className="relative z-10 flex items-center gap-3 text-lg uppercase tracking-wider">
+                Start Now
+                <svg className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/40 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            </button>
+          </Link>
+
+          <div className="text-muted text-sm font-medium tracking-widest uppercase">
+            <span className="text-cyan-400">●</span> 1-Minute Quiz
+          </div>
+        </div>
+
+        {/* Futuristic Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-500">
           {[
-            { emoji: '👶', title: 'For All Ages', desc: 'From 8 to 70 years old' },
-            { emoji: '🎯', title: 'Simple & Visual', desc: 'Easy to understand insights' },
-            { emoji: '💚', title: 'Non-Judgmental', desc: 'Supportive and encouraging' }
-          ].map((feature, idx) => (
-            <div key={idx}
-              className="p-6 rounded-2xl"
-              style={{
-                background: 'var(--color-bg-card)',
-                boxShadow: 'var(--shadow-sm)'
-              }}>
-              <div className="text-3xl mb-2">{feature.emoji}</div>
-              <h3 className="font-semibold mb-1" style={{ color: 'var(--color-text-primary)' }}>
-                {feature.title}
-              </h3>
-              <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
-                {feature.desc}
-              </p>
+            { label: 'Precision', value: 'Smart AI Analysis', glow: 'var(--color-cyan)' },
+            { label: 'Privacy', value: 'Safe & Private', glow: 'var(--color-purple)' },
+            { label: 'Interface', value: 'Easy To Use', glow: 'var(--color-magenta)' }
+          ].map((item, idx) => (
+            <div key={idx} className="glass-card p-6 rounded-3xl group hover:border-white/20 transition-all text-left">
+              <div className="w-1.5 h-1.5 rounded-full mb-4 animate-pulse" style={{ backgroundColor: item.glow, boxShadow: `0 0 10px ${item.glow}` }}></div>
+              <div className="text-[10px] font-bold text-muted uppercase tracking-[0.2em] mb-1">{item.label}</div>
+              <div className="text-lg font-bold text-bright tracking-tight">{item.value}</div>
             </div>
           ))}
         </div>

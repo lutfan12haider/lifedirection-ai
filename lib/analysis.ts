@@ -18,6 +18,18 @@ export interface LifeScores {
     overall: number;
 }
 
+export interface MomentumInfo {
+    strength: 'weak' | 'stable' | 'growing' | 'accelerating';
+    label: string;
+    description: string;
+}
+
+export interface MicroAction {
+    task: string;
+    duration: string;
+    impactArea: keyof LifeScores;
+}
+
 export interface PathSimulation {
     name: string;
     description: string;
@@ -29,9 +41,16 @@ export interface AnalysisResult {
     currentPath: PathSimulation;
     improvementPath: PathSimulation;
     optimalPath: PathSimulation;
+    momentum: MomentumInfo;
+    explanation: string;
+    weakestArea: {
+        name: string;
+        explanation: string;
+    };
+    microActions: MicroAction[];
+    emotionallyIntelligentSummary: string;
     risks: string[];
     positives: string[];
-    suggestions: string[];
 }
 
 const moodScoreMap: Record<string, number> = {
@@ -49,7 +68,7 @@ function calculateScore(value: number, optimal: number, weight: number = 1): num
     return normalizedScore * weight;
 }
 
-function analyzeHabits(data: HabitData): LifeScores {
+export function analyzeHabits(data: HabitData): LifeScores {
     const { age, phoneHours, sleepHours, productiveHours, activityMinutes, stressLevel, mood } = data;
 
     // Age-specific optimal values
@@ -74,6 +93,62 @@ function analyzeHabits(data: HabitData): LifeScores {
     const overall = Math.round(((focus + energy + health + learning + emotional + growth) / 6) * 10) / 10;
 
     return { focus, energy, health, learning, emotional, growth, overall };
+}
+
+function getMomentum(score: number): MomentumInfo {
+    if (score < 4) return { strength: 'weak', label: 'Needs Focus', description: 'Things could be clearer, but small changes can help a lot.' };
+    if (score < 6) return { strength: 'stable', label: 'Steady', description: 'You are doing okay and keeping your path steady.' };
+    if (score < 8) return { strength: 'growing', label: 'Growing', description: 'Your good habits are starting to make a real difference.' };
+    return { strength: 'accelerating', label: 'Great!', description: 'Your habits are building strong momentum for a great future.' };
+}
+
+function getMicroActions(weakestArea: string): MicroAction[] {
+    const actions: Record<string, MicroAction[]> = {
+        focus: [
+            { task: 'Set a 1-hour focus timer', duration: '60 mins', impactArea: 'focus' },
+            { task: 'Phone-free meal', duration: '20 mins', impactArea: 'focus' },
+            { task: 'Write down top 3 priorities', duration: '5 mins', impactArea: 'focus' }
+        ],
+        energy: [
+            { task: 'Quick sunlight walk', duration: '10 mins', impactArea: 'energy' },
+            { task: 'Rest with a power nap', duration: '15 mins', impactArea: 'energy' },
+            { task: 'Full glass of water now', duration: '1 min', impactArea: 'energy' }
+        ],
+        health: [
+            { task: 'Gentle stretching', duration: '10 mins', impactArea: 'health' },
+            { task: 'Stand up and move every hour', duration: '5 mins', impactArea: 'health' },
+            { task: 'Eat a healthy snack', duration: '5 mins', impactArea: 'health' }
+        ],
+        learning: [
+            { task: 'Read 2 pages of a book', duration: '5 mins', impactArea: 'learning' },
+            { task: 'Watch one helpful video', duration: '10 mins', impactArea: 'learning' },
+            { task: 'Think about one new thing learned', duration: '3 mins', impactArea: 'learning' }
+        ],
+        emotional: [
+            { task: 'Slow breathing (4 times)', duration: '2 mins', impactArea: 'emotional' },
+            { task: 'Text a friend or family', duration: '2 mins', impactArea: 'emotional' },
+            { task: 'Write one thing you are thankful for', duration: '1 min', impactArea: 'emotional' }
+        ],
+        growth: [
+            { task: 'Check your progress', duration: '5 mins', impactArea: 'growth' },
+            { task: 'Think about your future goals', duration: '5 mins', impactArea: 'growth' },
+            { task: 'Try one small new thing today', duration: '10 mins', impactArea: 'growth' }
+        ]
+    };
+    return actions[weakestArea] || actions['focus'];
+}
+
+function getSummary(data: HabitData, scores: LifeScores): string {
+    const { age } = data;
+    const name = age < 13 ? 'Explorer' : age < 20 ? 'Rising Star' : age < 60 ? 'Steward of Life' : 'Guide';
+
+    if (scores.overall > 7.5) {
+        return `As a ${name}, your current habits are creating a bright, clear path. You are building a great life for the future.`;
+    }
+    if (scores.overall > 5) {
+        return `As a ${name}, you are staying on a steady path. A few small changes could give you more energy and focus.`;
+    }
+    return `As a ${name}, life might feel a bit hard right now. Remember, you can change your path—one small change today can help a lot.`;
 }
 
 export function simulateFuture(data: HabitData): AnalysisResult {
@@ -101,46 +176,38 @@ export function simulateFuture(data: HabitData): AnalysisResult {
     };
     const optimalScores = analyzeHabits(optimalData);
 
-    // Identify risks and positives
+    // Find weakest area
+    const areas: (keyof LifeScores)[] = ['focus', 'energy', 'health', 'learning', 'emotional', 'growth'];
+    let weakestArea = areas[0];
+    let minScore = currentScores[weakestArea];
+
+    areas.forEach(area => {
+        if (currentScores[area] < minScore) {
+            minScore = currentScores[area];
+            weakestArea = area;
+        }
+    });
+
+    const explanations: Record<string, string> = {
+        focus: "It's hard to get things done when you can't focus. Focusing better will make your life easier.",
+        energy: "You are low on energy. Getting more rest will help you stay on track.",
+        health: "Moving your body is very important. It helps you stay healthy and feel better.",
+        learning: "Learning new things keeps your mind sharp. Life is more exciting when you keep growing.",
+        emotional: "Being calm is a great skill. It helps you handle hard times much easier.",
+        growth: "Small improvements add up over time. Consistency is the key to a better life."
+    };
+
     const risks: string[] = [];
     const positives: string[] = [];
-    const suggestions: string[] = [];
 
-    if (data.phoneHours > 4) {
-        risks.push('High screen time may reduce focus and sleep quality over time');
-        suggestions.push('Try reducing phone use by 1 hour, especially before bedtime');
-    }
+    if (data.phoneHours > 4) risks.push('High screen time may reduce focus and sleep quality over time');
+    if (data.sleepHours < 7) risks.push('Low sleep can decrease energy, memory, and emotional stability');
+    if (data.activityMinutes < 20) risks.push('Limited physical activity may impact mood and long-term health');
+    if (data.stressLevel > 7) risks.push('High stress can affect focus, sleep, and overall well-being');
 
-    if (data.sleepHours < 7) {
-        risks.push('Low sleep can decrease energy, memory, and emotional stability');
-        suggestions.push('Aim to sleep 30 minutes earlier each night');
-    } else if (data.sleepHours >= 7.5) {
-        positives.push('Good sleep duration supports brain health and energy');
-    }
-
-    if (data.activityMinutes < 20) {
-        risks.push('Limited physical activity may impact mood and long-term health');
-        suggestions.push('Start with just 10-15 minutes of light movement daily');
-    } else if (data.activityMinutes >= 30) {
-        positives.push('Regular movement boosts mood, energy, and health');
-    }
-
-    if (data.stressLevel > 7) {
-        risks.push('High stress can affect focus, sleep, and overall well-being');
-        suggestions.push('Try simple breathing exercises or short breaks during the day');
-    }
-
-    if (data.productiveHours >= 4) {
-        positives.push('Consistent focus time builds skills and progress');
-    }
-
-    if (suggestions.length < 3) {
-        suggestions.push('Keep a simple daily routine to build positive momentum');
-    }
-
-    if (risks.length === 0) {
-        positives.push('Your habits are creating a solid foundation for growth');
-    }
+    if (data.sleepHours >= 7.5) positives.push('Good sleep duration supports brain health and energy');
+    if (data.activityMinutes >= 30) positives.push('Regular movement boosts mood, energy, and health');
+    if (data.productiveHours >= 4) positives.push('Consistent focus time builds skills and progress');
 
     return {
         currentPath: {
@@ -161,8 +228,16 @@ export function simulateFuture(data: HabitData): AnalysisResult {
             scores: optimalScores,
             color: 'var(--color-success)'
         },
+        momentum: getMomentum(currentScores.overall),
+        explanation: "Your trajectory is a reflection of today's choices, not a fixed point in the future.",
+        weakestArea: {
+            name: weakestArea.charAt(0).toUpperCase() + weakestArea.slice(1),
+            explanation: explanations[weakestArea]
+        },
+        microActions: getMicroActions(weakestArea),
+        emotionallyIntelligentSummary: getSummary(data, currentScores),
         risks,
-        positives,
-        suggestions: suggestions.slice(0, 5)
+        positives
     };
 }
+
